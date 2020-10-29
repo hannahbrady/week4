@@ -1,0 +1,12 @@
+---
+title: "Week 4 Part 1"
+author: "Hannah Brady"
+date: "10/29/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Confidence Intervals and t-tests
