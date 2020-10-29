@@ -9,4 +9,59 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Confidence Intervals and t-tests
+# Confidence Intervals and t-tests
+
+## 1. Confidence intervals
+
+If I have a sample, I use t.test function if I think my assumptions will hold for a random sample from my population. I use t-test instead of z-test because I don't know population std deviation. This gives us more uncertainty.
+
+- Start by making up a vector.
+In the wild you would need to do some exploratory data viz to make sure it makes sense to use confidence intervals with your data. Ask q's like do you think you really had a random representative sample?
+-Run t.test() function for a onesample t-test
+-Review outcome:
+We see 95% CI above sample mean. Means in 95% of samples we take from our population, we would expect to see the population mean.
+Note that we are testing compared to a null hypothesis that the true mean is equal to 0. Doesn't really make sense.
+
+```{r}
+otter_length <- c(38, 41, 50, 27, 32, 41, 48, 60, 43)
+
+t.test(otter_length)
+
+```
+
+## 2. T-test (1 sample t-test)
+
+Threw into the console ?t.test (can use the ? and function for any function) and in the help tab bottom right of screen, returned arguments and descriptions of arguments for the function.
+Options for arguments:
+Can change the default to test against something other than null hypothesis by defining mu (default is mu = 0)
+
+Ex: See a claim that mean otter length is 50 inches.
+
+```{r}
+otter_test <- t.test(x = otter_length, mu = 50)
+otter_test
+```
+
+p-value = 0.0444 means that if pop mean really is 50 inches then there is a 4.44% chance that I could have taken a sample with a mean that is at least as different from 50 as my sample mean.
+
+## 3. 2-sample t-test
+
+Are my sample means so far apart that it is unlikely that they came from the same population?
+
+```{r}
+desert_bighorns <- c(32, 44, 18, 26, 50, 33, 42, 20)
+sierra_bighorns <- c(28, 31, 40, 42, 26, 29, 31)
+
+t.test(x = desert_bighorns, y = sierra_bighorns)
+```
+
+Welch does not assume equal variance.
+mean of desert = 33.125
+mean of sierra = 32.429
+
+How is confidence interval negative? **Difference** in mean horn lengths within the samples.
+
+p-value: if these samples are drawn from the same mean horn length then there is a 90% chance that you could have pulled samples and gotten results at least these different. We do not have enough evidence to reject the hypothesis that they are drawn from populations with the same mean
+
+
+

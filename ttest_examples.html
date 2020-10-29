@@ -379,8 +379,70 @@ summary {
 </div>
 
 
-<div id="confidence-intervals-and-t-tests" class="section level2">
-<h2>Confidence Intervals and t-tests</h2>
+<div id="confidence-intervals-and-t-tests" class="section level1">
+<h1>Confidence Intervals and t-tests</h1>
+<div id="confidence-intervals" class="section level2">
+<h2>1. Confidence intervals</h2>
+<p>If I have a sample, I use t.test function if I think my assumptions will hold for a random sample from my population. I use t-test instead of z-test because I don’t know population std deviation. This gives us more uncertainty.</p>
+<ul>
+<li>Start by making up a vector. In the wild you would need to do some exploratory data viz to make sure it makes sense to use confidence intervals with your data. Ask q’s like do you think you really had a random representative sample? -Run t.test() function for a onesample t-test -Review outcome: We see 95% CI above sample mean. Means in 95% of samples we take from our population, we would expect to see the population mean. Note that we are testing compared to a null hypothesis that the true mean is equal to 0. Doesn’t really make sense.</li>
+</ul>
+<pre class="r"><code>otter_length &lt;- c(38, 41, 50, 27, 32, 41, 48, 60, 43)
+
+t.test(otter_length)</code></pre>
+<pre><code>## 
+##  One Sample t-test
+## 
+## data:  otter_length
+## t = 12.932, df = 8, p-value = 1.21e-06
+## alternative hypothesis: true mean is not equal to 0
+## 95 percent confidence interval:
+##  34.69302 49.75142
+## sample estimates:
+## mean of x 
+##  42.22222</code></pre>
+</div>
+<div id="t-test-1-sample-t-test" class="section level2">
+<h2>2. T-test (1 sample t-test)</h2>
+<p>Threw into the console ?t.test (can use the ? and function for any function) and in the help tab bottom right of screen, returned arguments and descriptions of arguments for the function. Options for arguments: Can change the default to test against something other than null hypothesis by defining mu (default is mu = 0)</p>
+<p>Ex: See a claim that mean otter length is 50 inches.</p>
+<pre class="r"><code>otter_test &lt;- t.test(x = otter_length, mu = 50)
+otter_test</code></pre>
+<pre><code>## 
+##  One Sample t-test
+## 
+## data:  otter_length
+## t = -2.3821, df = 8, p-value = 0.0444
+## alternative hypothesis: true mean is not equal to 50
+## 95 percent confidence interval:
+##  34.69302 49.75142
+## sample estimates:
+## mean of x 
+##  42.22222</code></pre>
+<p>p-value = 0.0444 means that if pop mean really is 50 inches then there is a 4.44% chance that I could have taken a sample with a mean that is at least as different from 50 as my sample mean.</p>
+</div>
+<div id="sample-t-test" class="section level2">
+<h2>3. 2-sample t-test</h2>
+<p>Are my sample means so far apart that it is unlikely that they came from the same population?</p>
+<pre class="r"><code>desert_bighorns &lt;- c(32, 44, 18, 26, 50, 33, 42, 20)
+sierra_bighorns &lt;- c(28, 31, 40, 42, 26, 29, 31)
+
+t.test(x = desert_bighorns, y = sierra_bighorns)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  desert_bighorns and sierra_bighorns
+## t = 0.14825, df = 10.913, p-value = 0.8849
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -9.653212 11.046069
+## sample estimates:
+## mean of x mean of y 
+##  33.12500  32.42857</code></pre>
+<p>Welch does not assume equal variance. mean of desert = 33.125 mean of sierra = 32.429</p>
+<p>How is confidence interval negative? <strong>Difference</strong> in mean horn lengths within the samples.</p>
+<p>p-value: if these samples are drawn from the same mean horn length then there is a 90% chance that you could have pulled samples and gotten results at least these different. We do not have enough evidence to reject the hypothesis that they are drawn from populations with the same mean</p>
+</div>
 </div>
 
 
