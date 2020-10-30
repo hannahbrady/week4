@@ -1,0 +1,97 @@
+---
+title: "Week 4 - Part 2"
+author: "Hannah Brady"
+date: "10/29/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+# Comparing city mileage of compact and suv cars
+
+## Wrangling mpg data
+
+In console viewed "mpg" data included with tidyverse.
+
+Typed in ?mpg to get data description:
+Fuel economy data from 1999 to 2008 for 38 popular models of cars
+
+Create a subset of the two classes of cars that I am interested in: SUVs and compact cars
+
+```{r}
+compact_SUV <- mpg %>% 
+  filter(class %in% c("compact", "suv"))
+# could use unique funciton to verify that this worked and only kept compact and suv.
+```
+
+## Exploratory data visualization
+
+### Exploratory histograms:
+```{r}
+ggplot(data = compact_SUV, aes(x = cty)) +
+  geom_histogram(bins = 15) +
+  facet_wrap(~class)
+```
+
+Thoughts on distribution: compact might be positively skewed (has an upper tail), suv looks pretty normal. No major red flags right now tho.
+
+Can look a little closer tho using a quantile-quantile plot: the closer it is to linear, the closer your sample is to normally distributed.
+
+
+### Exploratory quantil-quantile plot:
+```{r}
+ggplot(data = compact_SUV, aes(sample = cty)) +
+  geom_qq() +
+  facet_wrap(~class)
+```
+
+SUV is pretty close to linear. Compact is mostly linear except for upper tail. Similar to what we saw in histogram.
+
+## Summary statistics
+
+Find descriptive statistics
+
+```{r}
+car_stats <- compact_SUV %>% 
+  group_by(class) %>% 
+  summarize(mean_city = mean(cty),
+            sd_city = sd(cty),
+            n = n())
+# Because n is > 30 and the central limit theorem, and we are only comparing means, we are not worried about whether or not or data is normally distributed.
+
+car_stats
+```
+
+
+## 2-sample t-test
+
+Create vectors creating observations for each sample (city gas mileage).
+Filter our data to only include compact cars, and then pull data from cty column into a vector.
+
+```{r}
+compact_sample <- compact_SUV %>% 
+  filter(class == "compact") %>% 
+  pull(cty)
+# If you did this with select() instead of pull, you would just end up with a 1-column data frame which is not what R wants. R wants a vector.
+
+suv_sample <- compact_SUV %>% 
+  filter(class == "suv") %>% 
+  pull(cty)
+
+t.test(x = compact_sample, suv_sample)
+```
+Differences in means is most important.
+Null hypothesis is that these were drawn from populations with the same mean.
+I am testing to see what the probability is of getting samples that are at least this different if that null hypothesis is true.
+That's what the p-value tells you. 2.2e-16 is the smallest value that the t-test will report. Says there is close to a 0% chance that you could have randomly drawn samples with means that are at least this different from populations with the same mean.
+
+Technically "there is a significant difference." <0.05
+
+
+
+
+
+
